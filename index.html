@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect Project Proposal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Calm Harmony (Stone, White, and Blue) -->
+    <!-- Application Structure Plan: A two-column SPA with a sticky left-hand navigation and a dynamic main content area. This structure was chosen over a linear document to empower stakeholders to explore the proposal non-linearly. Users can instantly jump to Scope, Timeline, or Compliance, matching how a real stakeholder would analyze a proposal. Key interactions include tabbed sections for Scope and Compliance, and a clickable bar chart for the Timeline, which reveals task details. -->
+    <!-- Visualization & Content Choices: 1. Report Info: 14-week, 5-phase timeline. Goal: Show process/duration. Viz: Horizontal Bar Chart (Gantt-like). Interaction: onClick to show phase-specific tasks in a detail area. Justification: Transforms a dry list into an immediate, clear visual overview of the project's flow. Library: Chart.js. 2. Report Info: In-Scope Modules & Compliance Topics. Goal: Organize dense, related info. Viz: Tabbed-content blocks. Interaction: onClick to switch visible content pane. Justification: Prevents overwhelming the user with text, making information clean and accessible. Method: HTML/Tailwind/JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link.active {
+            background-color: #eff6ff; 
+            color: #1d4ed8; 
+            border-left-width: 4px;
+            border-color: #2563eb;
+            font-weight: 600;
+        }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+            border-left-width: 4px;
+            border-color: transparent;
+        }
+        .tab-btn.active {
+            background-color: #1d4ed8;
+            color: #ffffff;
+        }
+        .tab-btn {
+            transition: all 0.2s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 font-sans text-stone-800">
+    <div class="flex flex-col md:flex-row min-h-screen">
+        
+        <nav class="md:w-64 w-full bg-white shadow-lg md:h-screen md:sticky md:top-0">
+            <div class="p-6">
+                <h1 class="text-2xl font-bold text-blue-700">CampusConnect</h1>
+                <p class="text-sm text-stone-600">Project Proposal</p>
+            </div>
+            <ul class="space-y-2 p-4">
+                <li><a href="#" class="nav-link active flex items-center gap-3 px-4 py-3 rounded-lg text-stone-700 hover:bg-stone-100" data-target="overview">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6-4a1 1 0 001-1v-1a1 1 0 10-2 0v1a1 1 0 001 1zm10 0a1 1 0 001-1v-1a1 1 0 10-2 0v1a1 1 0 001 1z" /></svg>
+                    Overview
+                </a></li>
+                <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-stone-700 hover:bg-stone-100" data-target="scope">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l-4 4-4-4 4-4" /></svg>
+                    Scope of Work
+                </a></li>
+                <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-stone-700 hover:bg-stone-100" data-target="timeline">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                    Project Timeline
+                </a></li>
+                <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-stone-700 hover:bg-stone-100" data-target="methodology">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                    Methodology
+                </a></li>
+                <li><a href="#" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-stone-700 hover:bg-stone-100" data-target="compliance">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 13.22a11.99 11.99 0 002.803 7.11A11.955 11.955 0 0112 21.054a11.955 11.955 0 018.618-3.04A12.02 12.02 0 0021 13.22a11.99 11.99 0 00-2.803-7.11z" /></svg>
+                    Compliance
+                </a></li>
+            </ul>
+        </nav>
+
+        <main class="flex-1 p-6 md:p-12 overflow-y-auto">
+            
+            <section id="overview-content" class="page-content space-y-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-blue-700 mb-4">Project Overview</h2>
+                    <p class="text-lg text-stone-700 max-w-3xl">This proposal outlines the scope, methodology, compliance, and timeline for "CampusConnect," a web-based portal for The City Technical Institute (CTI) designed to modernize and streamline core student services.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-sm font-semibold text-stone-500 uppercase">Client</h3>
+                        <p class="text-xl font-bold text-stone-800">The City Technical Institute (CTI)</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-sm font-semibold text-stone-500 uppercase">Prepared By</h3>
+                        <p class="text-xl font-bold text-stone-800">Senior Project Manager</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-sm font-semibold text-stone-500 uppercase">Date</h3>
+                        <p class="text-xl font-bold text-stone-800">November 12, 2025</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-2xl font-bold text-stone-800 mb-3">Executive Summary</h3>
+                    <p class="text-base text-stone-700 leading-relaxed max-w-3xl">This proposal outlines the scope, methodology, compliance considerations, and timeline for the development of "CampusConnect," a web-based student services portal for the City Technical Institute (CTI). The project's goal is to modernize and streamline core student services by migrating from manual, paper-based processes to an efficient, secure, and accessible online platform.</p>
+                </div>
+            </section>
+
+            <section id="scope-content" class="page-content hidden space-y-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-blue-700 mb-4">Scope of Work</h2>
+                    <p class="text-lg text-stone-700 max-w-3xl">To ensure clear expectations, the project scope is divided into what is included (In-Scope) and what is not (Out-of-Scope). This section details the core features and modules to be built.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+                        <h3 class="text-2xl font-bold text-green-700 mb-4">In-Scope Features</h3>
+                        <p class="text-stone-700 mb-6">The portal will provide a central hub for students to manage academic needs. Explore the core modules below.</p>
+                        
+                        <div class="mb-4 flex flex-wrap gap-2 border-b border-stone-200">
+                            <button class="scope-tab-btn tab-btn active py-2 px-4 rounded-t-lg text-sm font-medium" data-target="module1">Module 1: Academics</button>
+                            <button class="scope-tab-btn tab-btn py-2 px-4 rounded-t-lg text-sm font-medium text-stone-600 hover:text-blue-700" data-target="module2">Module 2: Documents</button>
+                            <button class="scope-tab-btn tab-btn py-2 px-4 rounded-t-lg text-sm font-medium text-stone-600 hover:text-blue-700" data-target="module3">Module 3: Communication</button>
+                            <button class="scope-tab-btn tab-btn py-2 px-4 rounded-t-lg text-sm font-medium text-stone-600 hover:text-blue-700" data-target="module4">Module 4: Announcements</button>
+                        </div>
+                        
+                        <div class="scope-tab-content space-y-3" id="module1-content">
+                            <h4 class="text-lg font-semibold text-stone-800">Academic & Schedule Management</h4>
+                            <ul class="list-disc list-outside pl-5 text-stone-700 space-y-2">
+                                <li>View current course schedule with times and locations.</li>
+                                <li>Access official final grades for all past semesters.</li>
+                                <li>See in-progress grades for the current term (if available).</li>
+                            </ul>
+                        </div>
+                        <div class="scope-tab-content hidden space-y-3" id="module2-content">
+                            <h4 class="text-lg font-semibold text-stone-800">Online Document Request Center</h4>
+                            <ul class="list-disc list-outside pl-5 text-stone-700 space-y-2">
+                                <li>Submit online requests for official transcripts.</li>
+                                <li>Request proof of enrollment certifications.</li>
+                                <li>Track the status of document requests (Submitted, In-Progress, Ready).</li>
+                                <li>Provide an admin queue for the Registrar's Office to manage requests.</li>
+                            </ul>
+                        </div>
+                        <div class="scope-tab-content hidden space-y-3" id="module3-content">
+                            <h4 class="text-lg font-semibold text-stone-800">Department Communication</h4>
+                            <ul class="list-disc list-outside pl-5 text-stone-700 space-y-2">
+                                <li>Send secure messages to the administrative staff of their assigned department.</li>
+                                <li>Receive secure responses and view correspondence history.</li>
+                            </ul>
+                        </div>
+                        <div class="scope-tab-content hidden space-y-3" id="module4-content">
+                            <h4 class="text-lg font-semibold text-stone-800">Campus Announcements</h4>
+                            <ul class="list-disc list-outside pl-5 text-stone-700 space-y-2">
+                                <li>View a central feed for campus-wide news (registration dates, events).</li>
+                                <li>Receive high-priority notifications for urgent alerts (campus closures).</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-red-500">
+                        <h3 class="text-2xl font-bold text-red-700 mb-4">Out-of-Scope</h3>
+                        <p class="text-stone-700 mb-6">To maintain focus, the following items are not included in this project:</p>
+                        <ul class="list-disc list-outside pl-5 text-stone-700 space-y-3">
+                            <li><span class="font-semibold">New Student Admissions:</span> The portal will not handle applications for prospective students.</li>
+                            <li><span class="font-semibold">Tuition & Financial Services:</span> No features for paying tuition, managing financial aid, or scholarships.</li>
+                            <li><span class="font-semibold">Faculty-Side Course Management:</span> Professors will not use this portal for grading or course management.</li>
+                            <li><span class="font-semibold">Student-to-Student Interaction:</span> No social forums, clubs, or direct messaging between students.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="timeline-content" class="page-content hidden space-y-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-blue-700 mb-4">Project Timeline</h2>
+                    <p class="text-lg text-stone-700 max-w-3xl">We propose a 14-week (3.5-month) high-level timeline. The chart below visualizes the duration of each project phase. Click on a phase to see the key tasks involved.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="text-xl font-bold text-stone-800 mb-4 text-center">Project Phases (14 Weeks Total)</h3>
+                    <div class="chart-container">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+
+                <div id="timeline-details" class="bg-blue-50 p-6 rounded-xl shadow-inner hidden">
+                    <h4 class="text-xl font-bold text-blue-700 mb-3" id="timeline-phase-title"></h4>
+                    <ul class="list-disc list-outside pl-5 text-stone-700 space-y-2" id="timeline-phase-tasks">
+                    </ul>
+                </div>
+            </section>
+
+            <section id="methodology-content" class="page-content hidden space-y-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-blue-700 mb-4">Software Development Methodology</h2>
+                    <p class="text-lg text-stone-700 max-w-3xl">This project will use the <span class="font-bold text-blue-700">Agile (Scrum Framework)</span> methodology. This approach involves iterative development in short, 2-week cycles ("Sprints") to ensure flexibility and continuous stakeholder feedback.</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-2xl font-bold text-stone-800 mb-4">Justification for Agile</h3>
+                    <p class="text-stone-700 max-w-3xl mb-6">This choice is ideal for CTI's transition from manual processes. The key benefits include:</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h4 class="text-lg font-semibold text-blue-700 mb-2">1. Stakeholder Feedback</h4>
+                            <p class="text-stone-700">Allows the Registrar's Office to see and test working software every 2 weeks, rather than waiting months for a final product.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h4 class="text-lg font-semibold text-blue-700 mb-2">2. Evolving Requirements</h4>
+                            <p class="text-stone-700">CTI staff may not realize all needs until they use the system. Agile allows us to adapt and refine requirements iteratively.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h4 class="text-lg font-semibold text-blue-700 mb-2">3. Faster Time-to-Value</h4>
+                            <p class="text-stone-700">We can prioritize and deliver the most critical features (like "View Grades") to students quickly, providing immediate value.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <h4 class="text-lg font-semibold text-blue-700 mb-2">4. Risk Mitigation</h4>
+                            <p class="text-stone-700">Helps identify technical risks (like SIS integration challenges) early in the process, not at the very end.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="compliance-content" class="page-content hidden space-y-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-blue-700 mb-4">Legal & Ethical Compliance</h2>
+                    <p class="text-lg text-stone-700 max-w-3xl">Handling sensitive student data is a top priority. This section details our action plan for the key compliance areas of Data Privacy, Security, and Accessibility.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="mb-4 flex flex-wrap gap-2 border-b border-stone-200">
+                        <button class="compliance-tab-btn tab-btn active py-2 px-4 rounded-t-lg text-sm font-medium" data-target="privacy">1. Data Privacy (FERPA)</button>
+                        <button class="compliance-tab-btn tab-btn py-2 px-4 rounded-t-lg text-sm font-medium text-stone-600 hover:text-blue-700" data-target="security">2. Data Security</button>
+                        <button class="compliance-tab-btn tab-btn py-2 px-4 rounded-t-lg text-sm font-medium text-stone-600 hover:text-blue-700" data-target="accessibility">3. Accessibility (WCAG)</button>
+                    </div>
+
+                    <div class="compliance-tab-content" id="privacy-content">
+                        <h3 class="text-xl font-bold text-stone-800 mb-3">Data Privacy (FERPA)</h3>
+                        <p class="text-stone-700 mb-4">We will use the Family Educational Rights and Privacy Act (FERPA) as the gold standard for protecting student education records.</p>
+                        <h4 class="text-lg font-semibold text-stone-800 mb-2">Action Plan:</h4>
+                        <ul class="list-disc list-outside pl-5 text-stone-700 space-y-2">
+                            <li>All student data (grades, PII, schedules) will be treated as confidential.</li>
+                            <li>The system will be built with Role-Based Access Control (RBAC) to ensure only authorized personnel can access relevant information.</li>
+                            <li>Student data will never be shared with third parties without explicit consent.</li>
+                        </ul>
+                    </div>
+
+                    <div class="compliance-tab-content hidden" id="security-content">
+                        <h3 class="text-xl font-bold text-stone-800 mb-3">Data Security</h3>
+                        <p class="text-stone-700 mb-4">To protect student data from breaches, the system will implement robust, multi-layered security measures.</p>
+                        <h4 class="text-lg font-semibold text-stone-800 mb-2">Action Plan:</h4>
+                        <ul class="list-disc list-outside pl-5 text-stone-700 space-y-2">
+                            <li><strong>Authentication:</strong> Secure login with strong password requirements. Multi-factor authentication (MFA) will be strongly recommended.</li>
+                            <li><strong>Encryption:</strong> All data will be encrypted in transit (using SSL/TLS) and at rest (database-level encryption).</li>
+                            <li><strong>Auditing:</strong> We will maintain secure audit logs to track access to and modification of sensitive records.</li>
+                        </ul>
+                    </div>
+
+                    <div class="compliance-tab-content hidden" id="accessibility-content">
+                        <h3 class="text-xl font-bold text-stone-800 mb-3">Accessibility (WCAG)</h3>
+                        <p class="text-stone-700 mb-4">The portal must be usable by all students, including those with disabilities.</p>
+                        <h4 class="text-lg font-semibold text-stone-800 mb-2">Action Plan:</h4>
+                        <ul class="list-disc list-outside pl-5 text-stone-700 space-y-2">
+                            <li>The portal will be developed to meet the <strong>Web Content Accessibility Guidelines (WCAG) 2.1 Level AA</strong> standards.</li>
+                            <li>This includes ensuring the site is navigable via keyboard, compatible with screen readers, provides text alternatives for non-text content, and maintains proper color contrast.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const pages = document.querySelectorAll('.page-content');
+            
+            const scopeTabs = document.querySelectorAll('.scope-tab-btn');
+            const scopeContents = document.querySelectorAll('.scope-tab-content');
+            
+            const complianceTabs = document.querySelectorAll('.compliance-tab-btn');
+            const complianceContents = document.querySelectorAll('.compliance-tab-content');
+
+            const timelineData = {
+                'Phase 1: Discovery & Planning (Weeks 1-2)': [
+                    'Conduct final stakeholder interviews (Registrar, IT, Student Services).',
+                    'Refine user stories and build the initial Product Backlog.',
+                    'Finalize technical architecture and perform SIS integration analysis.',
+                    'Set up all development, testing, and production environments.',
+                    'Establish the project\'s "Definition of Done" and testing criteria.',
+                ],
+                'Phase 2: Design & Prototyping (Weeks 3-4)': [
+                    'Develop user flow diagrams and wireframes.',
+                    'Create high-fidelity mockups and a clickable prototype (e.g., in Figma).',
+                    'Conduct usability testing with a small student focus group.',
+                    'Obtain final design sign-off from CTI.',
+                ],
+                'Phase 3: Development Sprints (Weeks 5-12)': [
+                    'Sprint 1: Core Architecture, Secure Authentication, and "View Grades & Schedule".',
+                    'Sprint 2: Build "Document Request" module (student-facing forms and admin-facing queue).',
+                    'Sprint 3: Build "Secure Messaging" module and "Announcements" feed.',
+                    'Sprint 4: Implement notification system, final SIS integration testing, and bug fixes.',
+                ],
+                'Phase 4: User Acceptance Testing (UAT) & QA (Week 13)': [
+                    'Provide a feature-complete system to CTI staff (Registrar, department admins) for formal UAT.',
+                    'Release the portal to a pilot group of students for end-to-end testing.',
+                    'Identify and remediate all critical and high-priority bugs.',
+                    'Obtain final UAT sign-off from CTI.',
+                ],
+                'Phase 5: Deployment & Launch (Week 14)': [
+                    'Deploy final, approved code to the production environment.',
+                    'Conduct final "Go-Live" checks.',
+                    'Provide training documentation and sessions for administrative staff.',
+                    'Officially launch "CampusConnect" to the student body.',
+                    'Transition to a 2-week post-launch support and stabilization period.',
+                ]
+            };
+
+            function showPage(targetId) {
+                pages.forEach(page => page.classList.add('hidden'));
+                document.getElementById(`${targetId}-content`).classList.remove('hidden');
+                
+                navLinks.forEach(link => link.classList.remove('active'));
+                document.querySelector(`.nav-link[data-target="${targetId}"]`).classList.add('active');
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = e.currentTarget.dataset.target;
+                    showPage(targetId);
+                });
+            });
+
+            function setupTabs(tabButtons, tabContents) {
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetId = e.currentTarget.dataset.target;
+                        
+                        tabContents.forEach(content => content.classList.add('hidden'));
+                        document.getElementById(`${targetId}-content`).classList.remove('hidden');
+                        
+                        tabButtons.forEach(btn => btn.classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+                    });
+                });
+            }
+
+            setupTabs(scopeTabs, scopeContents);
+            setupTabs(complianceTabs, complianceContents);
+
+            const ctx = document.getElementById('timelineChart').getContext('2d');
+            const timelineChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        'Phase 1: Discovery & Planning (Weeks 1-2)',
+                        'Phase 2: Design & Prototyping (Weeks 3-4)',
+                        'Phase 3: Development Sprints (Weeks 5-12)',
+                        'Phase 4: User Acceptance Testing (UAT) & QA (Week 13)',
+                        'Phase 5: Deployment & Launch (Week 14)'
+                    ],
+                    datasets: [{
+                        label: 'Duration in Weeks',
+                        data: [2, 2, 8, 1, 1],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(34, 197, 94, 0.7)',
+                            'rgba(249, 115, 22, 0.7)',
+                            'rgba(139, 92, 246, 0.7)',
+                            'rgba(239, 68, 68, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(34, 197, 94, 1)',
+                            'rgba(249, 115, 22, 1)',
+                            'rgba(139, 92, 246, 1)',
+                            'rgba(239, 68, 68, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.raw} weeks`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Weeks'
+                            }
+                        }
+                    },
+                    onClick: (e, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            const label = timelineChart.data.labels[index];
+                            const tasks = timelineData[label];
+                            
+                            const detailsBox = document.getElementById('timeline-details');
+                            const titleEl = document.getElementById('timeline-phase-title');
+                            const tasksEl = document.getElementById('timeline-phase-tasks');
+
+                            titleEl.textContent = label;
+                            tasksEl.innerHTML = '';
+                            tasks.forEach(task => {
+                                const li = document.createElement('li');
+                                li.textContent = task;
+                                tasksEl.appendChild(li);
+                            });
+
+                            detailsBox.classList.remove('hidden');
+                        }
+                    }
+                }
+            });
+
+            showPage('overview');
+        });
+    </script>
+</body>
+</html>
